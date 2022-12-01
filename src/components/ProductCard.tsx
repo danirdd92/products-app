@@ -9,10 +9,14 @@ interface Props {
 export const ProductCard = ({ product }: Props) => {
   const utils = trpc.useContext();
 
-  const selectProduct = useProductStore((state) => state.selectProduct);
+  const [selectProduct] = useProductStore((state) => [
+    state.selectProduct,
+    state.selectedProductId,
+  ]);
   const removeProduct = trpc.products.remove.useMutation({
     onSuccess: () => {
       utils.products.list.invalidate();
+      selectProduct("");
     },
   }).mutateAsync;
 
@@ -35,7 +39,10 @@ export const ProductCard = ({ product }: Props) => {
       </div>
 
       <div className="flex items-end justify-end">
-        <Button variant="delete" onClick={() => removeProduct(product.id)}>
+        <Button
+          variant="delete"
+          onClick={() => removeProduct({ id: product.id })}
+        >
           Delete
         </Button>
       </div>
