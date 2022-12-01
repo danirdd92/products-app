@@ -16,9 +16,9 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 
 ## How To Use
 
-> npm i -g pnpm
-> pnpm && prisma db seed
-> pnpm dev
+> - npm i -g pnpm
+> - pnpm && prisma db seed
+> - pnpm dev
 
 ## What's next? How do I make an app with this?
 
