@@ -45,4 +45,18 @@ export const productsRouter = router({
         });
       }
     }),
+
+  remove: t
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx: { prisma }, input: { id } }) => {
+      return await prisma.product.delete({
+        where: {
+          id,
+        },
+      });
+    }),
 });

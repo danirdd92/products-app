@@ -1,12 +1,21 @@
 import useProductStore from "../store/useProductStore";
 import type { Product } from "../types";
+import { trpc } from "../utils/trpc";
 import { Button } from "./Button";
 
 interface Props {
   product: Product;
 }
 export const ProductCard = ({ product }: Props) => {
+  const utils = trpc.useContext();
+
   const selectProduct = useProductStore((state) => state.selectProduct);
+  const removeProduct = trpc.products.remove.useMutation({
+    onSuccess: () => {
+      utils.products.list.invalidate();
+    },
+  }).mutateAsync;
+
   return (
     <div
       className="flex max-w-lg cursor-pointer gap-1 break-words border-2 border-slate-800 bg-white p-4 shadow-xl"
@@ -26,7 +35,9 @@ export const ProductCard = ({ product }: Props) => {
       </div>
 
       <div className="flex items-end justify-end">
-        <Button variant="delete">Delete</Button>
+        <Button variant="delete" onClick={() => removeProduct(product.id)}>
+          Delete
+        </Button>
       </div>
     </div>
   );

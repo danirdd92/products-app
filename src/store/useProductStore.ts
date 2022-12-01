@@ -11,7 +11,7 @@ const useProductStore = create<ProductState>((set) => ({
   selectProduct: (id: string) =>
     set((state) => ({ selectedProductId: (state.selectedProductId = id) })),
   createNewProduct: () =>
-    set((state) => ({ selectedProductId: (state.selectedProductId = "") })),
+    set((state) => ({ selectedProductId: (state.selectedProductId = "-1") })),
 }));
 
 export default useProductStore;

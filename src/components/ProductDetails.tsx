@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { useEffect, useState } from "react";
 import useProductStore from "../store/useProductStore";
 import type { Product } from "../types";
@@ -6,8 +7,8 @@ import { Button } from "./Button";
 
 const ProductDetails = () => {
   const utils = trpc.useContext();
-  const [product, setProduct] = useState<Product>();
   const id = useProductStore((state) => state.selectedProductId);
+  const [product, setProduct] = useState<Product>();
   const { data, isLoading } = trpc.products.list.useQuery();
   const { mutateAsync: upsertProduct } = trpc.products.upsert.useMutation({
     onSuccess(data) {
@@ -15,8 +16,19 @@ const ProductDetails = () => {
       setProduct(data);
     },
   });
+
   useEffect(() => {
-    if (data) {
+    console.log("id: ", id);
+
+    if (id === "-1") {
+      setProduct({
+        id: "",
+        image: "",
+        name: "",
+        description: "",
+        price: new Prisma.Decimal(0),
+      });
+    } else if (data) {
       const prod = data.find((p) => p.id === id);
       if (prod) setProduct(prod);
     }
@@ -34,9 +46,11 @@ const ProductDetails = () => {
   if (!data || isLoading || !product) return <div>loading...</div>;
 
   return (
-    <div className="t-0 fixed  mt-4 h-[85%] overflow-auto border-2 border-slate-800 bg-white p-4 shadow-lg">
-      {id === "" ? (
-        <div>Add new Product</div>
+    <div className="t-0 fixed h-[85%] w-[25rem] overflow-auto border-2 border-slate-800 bg-white p-4 shadow-lg">
+      {id === "-1" ? (
+        <h2 className="border-b border-b-slate-600 text-2xl font-bold text-slate-800">
+          Add new Product
+        </h2>
       ) : (
         <img
           className="my-2 mr-2 block max-h-[180px] max-w-[320px] shadow-xl outline outline-gray-300"
